@@ -23,6 +23,7 @@ export default function TabOneScreen() {
   const [logs, dispatchLogs, handleMessages] = useLogs()
   const [isLoading, setIsLoading] = useState(true);
   const webViewRef = useRef<WebView>(null)
+  const logsScrollViewRef = useRef<ScrollView>(null)
 
   const keyboard = useKeyboard()
   const insets = useSafeAreaInsets()
@@ -43,6 +44,10 @@ ${langContent.javascript}
       webViewRef.current.reload();
     } else {
       setHtmlContent(() => html + css + js)
+    }
+
+    if (logsScrollViewRef.current) {
+      logsScrollViewRef.current.scrollToEnd({animated: true});
     }
   }
 
@@ -109,7 +114,7 @@ ${langContent.javascript}
           <WebView ref={webViewRef} source={{html: htmlContentMemo}} style={styles.html} onMessage={handleMessages}/>
         </View>
         <Button onPress={() => dispatchLogs({type: 'clear'})}><Text>Clear</Text></Button>
-        <ScrollView style={styles.consoleOutput}>
+        <ScrollView ref={logsScrollViewRef} style={styles.consoleOutput}>
           {logs.map((log) => {
             return <LogMessage key={log.id} log={log}/>
           })}

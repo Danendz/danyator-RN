@@ -26,16 +26,20 @@ const getStoredLangValues = async () => {
 }
 
 let saveTimeout: NodeJS.Timeout
+let setLangInputTimeout: NodeJS.Timeout
 export const useLangInput = (lang: SupportedLangs) => {
   const [langInput, setLangInput] = useState(DefaultLangValues);
 
-  const saveLangInput = (value: string, withTimeout = true) => {
-    setLangInput((prevState) => ({...prevState, [lang]: value}));
+  const saveLangInput = (value: string) => {
+    clearTimeout(setLangInputTimeout)
+    setLangInputTimeout = setTimeout(() => {
+      setLangInput((prevState) => ({...prevState, [lang]: value}));
+    }, 100)
 
     clearTimeout(saveTimeout)
     saveTimeout = setTimeout(() => {
       setLangContentToLocalStorage(lang, value);
-    }, withTimeout ? AUTO_SAVE_TIMEOUT : 0);
+    }, AUTO_SAVE_TIMEOUT);
   }
 
   const currentLangInput= useMemo(() => {
