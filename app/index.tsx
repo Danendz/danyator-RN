@@ -89,8 +89,8 @@ ${langContent.javascript}
               style={{
                 ...{
                   fontSize: 20,
-                  inputLineHeight: 26,
-                  highlighterLineHeight: 26,
+                  inputLineHeight: 30,
+                  highlighterLineHeight: 30,
                 },
                 ...(keyboard.keyboardShown
                   ? {marginBottom: keyboard.keyboardHeight - insets.bottom}

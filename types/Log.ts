@@ -37,5 +37,5 @@ export interface LogJsError extends LogBase, JSError {
 export type Log = LogInfo | LogWarning | LogError | LogUnhandledRejectionError | LogJsError;
 
 export const isJSError = (log: Log): log is LogUnhandledRejectionError | LogJsError => {
-  return ['jsError', 'error'].includes(log.type)
+  return ['jsError', 'unhandledrejection'].includes(log.type)
 }
