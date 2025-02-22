@@ -1,7 +1,5 @@
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
 
-import CodeEditor from "@rivascva/react-native-code-editor/src";
-import {CodeEditorSyntaxStyles} from "@rivascva/react-native-code-editor";
 import WebView from "react-native-webview";
 import {useEffect, useRef, useState} from "react";
 import {SupportedLangs, useSupportedLanguages} from "@/hooks/useSupportedLanguages";
@@ -14,6 +12,8 @@ import Colors from "@/constants/Colors";
 import {useWebviewEvents} from "@/hooks/useWebviewEvents";
 import {LogMessage} from "@/components/ui/LogMessage/LogMessage";
 import {Button} from "@/components/ui/Buttons/Button";
+import CodeEditor from "@rivascva/react-native-code-editor/src";
+import {CodeEditorSyntaxStyles} from "@rivascva/react-native-code-editor";
 
 export default function TabOneScreen() {
   const [lang, editorLang, setLang] = useSupportedLanguages()
