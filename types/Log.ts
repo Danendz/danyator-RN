@@ -1,4 +1,4 @@
-﻿type LogTypes = 'log' | 'error' | 'warn' | 'jsError' | 'unhandledrejection'
+﻿export type LogTypes = 'log' | 'error' | 'warn' | 'jsError' | 'unhandledrejection'
 
 interface LogBase {
   id: string,

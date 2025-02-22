@@ -6,13 +6,12 @@ import WebView from "react-native-webview";
 import {useEffect, useRef, useState} from "react";
 import {SupportedLangs, useSupportedLanguages} from "@/hooks/useSupportedLanguages";
 import {useLangInput} from "@/hooks/useLanguagesInput";
-import {useKeyboard} from "@react-native-community/hooks";
-import {useSafeAreaInsets, SafeAreaView} from "react-native-safe-area-context";
+import {SafeAreaView} from "react-native-safe-area-context";
 import Loading from "@/components/ui/Loading/Loading";
 import {useHtmlContent} from "@/hooks/useHtmlContent";
 import LanguageTabs from "@/components/ui/LanguageTabs/LanguageTabs";
 import Colors from "@/constants/Colors";
-import {useLogs} from "@/hooks/useLogs";
+import {useWebviewEvents} from "@/hooks/useWebviewEvents";
 import {LogMessage} from "@/components/ui/LogMessage/LogMessage";
 import {Button} from "@/components/ui/Buttons/Button";
 
@@ -20,13 +19,10 @@ export default function TabOneScreen() {
   const [lang, editorLang, setLang] = useSupportedLanguages()
   const [langInput, currentLangInput, saveLangInput, loadValues] = useLangInput(lang)
   const [htmlContent, htmlContentMemo, setHtmlContent] = useHtmlContent(langInput)
-  const [logs, dispatchLogs, handleMessages] = useLogs()
+  const [logs, title, dispatchLogs, handleMessages] = useWebviewEvents()
   const [isLoading, setIsLoading] = useState(true);
   const webViewRef = useRef<WebView>(null)
   const logsScrollViewRef = useRef<ScrollView>(null)
-
-  const keyboard = useKeyboard()
-  const insets = useSafeAreaInsets()
 
   const runCode = (langContent?: typeof langInput) => {
     langContent = langContent ?? langInput;
@@ -96,10 +92,7 @@ ${langContent.javascript}
                   fontSize: 20,
                   inputLineHeight: 30,
                   highlighterLineHeight: 30,
-                },
-                ...(keyboard.keyboardShown
-                  ? {marginBottom: keyboard.keyboardHeight - insets.bottom}
-                  : {}),
+                }
               }}
               language={editorLang}
               syntaxStyle={CodeEditorSyntaxStyles.atomOneDark}
@@ -111,6 +104,9 @@ ${langContent.javascript}
       <View style={styles.outputContainer}>
         <Button onPress={() => runCode()}><Text>Run code</Text></Button>
         <View style={styles.htmlOutput}>
+          {title && <View style={styles.htmlTitle}>
+            <Text>{title}</Text>
+          </View>}
           <WebView ref={webViewRef} source={{html: htmlContentMemo}} style={styles.html} onMessage={handleMessages}/>
         </View>
         <Button onPress={() => dispatchLogs({type: 'clear'})}><Text>Clear</Text></Button>
@@ -135,15 +131,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 8,
   },
-  editor: {
-    fontSize: 20,
-    borderRadius: 8,
-  },
   editorInner: {
     flex: 1,
     borderWidth: 1,
     borderRadius: 8,
     overflow: "hidden",
+  },
+  editor: {
+    flex: 1
   },
   outputContainer: {
     display: 'flex',
@@ -166,5 +161,13 @@ const styles = StyleSheet.create({
   },
   html: {
     flex: 1,
-  }
+  },
+  htmlTitle: {
+    borderWidth: 1,
+    alignSelf: 'flex-start',
+    borderColor: '#ccc',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderBottomEndRadius: 8,
+  },
 });

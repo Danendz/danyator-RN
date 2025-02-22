@@ -67,6 +67,12 @@ const CUSTOM_INJECTION_SCRIPT = () => {
         error: event.reason && event.reason.stack ? event.reason.stack : ''
       });
     });
+    
+    
+    // Get page's title
+    document.addEventListener('DOMContentLoaded', function() {
+      window.ReactNativeWebView.postMessage(JSON.stringify({type: 'title', value: window.document.title}));
+    })
   })();
     true;
 </script>
