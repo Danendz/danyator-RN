@@ -2,7 +2,7 @@ import {StyleSheet, View, Text, ScrollView} from 'react-native';
 
 import WebView from "react-native-webview";
 import {useEffect, useRef, useState} from "react";
-import {SupportedLangs, useSupportedLanguages} from "@/hooks/useSupportedLanguages";
+import {isConsoleLanguage, SupportedLangs, useSupportedLanguages} from "@/hooks/useSupportedLanguages";
 import {useLangInput} from "@/hooks/useLanguagesInput";
 import {SafeAreaView} from "react-native-safe-area-context";
 import Loading from "@/components/ui/Loading/Loading";
@@ -26,6 +26,21 @@ export default function TabOneScreen() {
 
   const runCode = (langContent?: typeof langInput) => {
     langContent = langContent ?? langInput;
+    // if (isConsoleLanguage(lang)) {
+    //   switch (lang) {
+    //     case 'python':
+    //       const result = pyodide!.runPython(langContent.python)
+    //       dispatchLogs({
+    //         type: 'add', log: {
+    //           id: uuid.v4(),
+    //           type: 'log',
+    //           message: result,
+    //           timestamp: new Date().toLocaleDateString(),
+    //         }
+    //       })
+    //   }
+    //   return
+    // }
 
     const html = langContent.html;
     const css = `<style>${langContent.css}</style>`;
@@ -75,6 +90,7 @@ ${langContent.javascript}
     )
   }
 
+
   return (
     <View style={styles.container}>
       <View style={styles.editorContainer}>
@@ -101,15 +117,20 @@ ${langContent.javascript}
           </SafeAreaView>
         </View>
       </View>
-      <View style={styles.outputContainer}>
-        <Button onPress={() => runCode()}><Text>Run code</Text></Button>
-        <View style={styles.htmlOutput}>
-          {title && <View style={styles.htmlTitle}>
-            <Text>{title}</Text>
-          </View>}
-          <WebView ref={webViewRef} source={{html: htmlContentMemo}} style={styles.html} onMessage={handleMessages}/>
+      <View style={[styles.outputContainer]}>
+        <View style={[isConsoleLanguage(lang) ? {gap: 8, flexDirection: 'row'} : {flex: 3, gap: 8,}]}>
+          <Button onPress={() => runCode()}><Text>Run code</Text></Button>
+
+          <View style={[styles.htmlOutput, isConsoleLanguage(lang) && {display: 'none'}]}>
+            {title && <View style={styles.htmlTitle}>
+                <Text>{title}</Text>
+            </View>}
+            <WebView ref={webViewRef} source={{html: htmlContentMemo}} style={styles.html}
+                     onMessage={handleMessages}/>
+          </View>
+
+          <Button onPress={() => dispatchLogs({type: 'clear'})}><Text>Clear</Text></Button>
         </View>
-        <Button onPress={() => dispatchLogs({type: 'clear'})}><Text>Clear</Text></Button>
         <ScrollView ref={logsScrollViewRef} style={styles.consoleOutput}>
           {logs.map((log) => {
             return <LogMessage key={log.id} log={log}/>
@@ -159,6 +180,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
   },
+  onlyConsole: {},
   html: {
     flex: 1,
   },

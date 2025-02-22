@@ -65,7 +65,6 @@ export const useWebviewEvents = () => {
           })
           break;
         case 'title':
-          console.log(data.value)
           setTitle(() => data.value)
           break;
       }

@@ -1,14 +1,20 @@
 ﻿import {useMemo, useState} from "react";
+import {CONSOLE_ONLY_LANGUAGES} from "@/constants/Languages";
 
 export const SupportedLangsObj = {
   HTML: 'html',
   JavaScript: 'javascript',
   CSS: 'css',
+  Python: 'python',
 } as const
 
 export type SupportedLangsKeys = keyof typeof SupportedLangsObj;
 
 export type SupportedLangs = typeof SupportedLangsObj[SupportedLangsKeys]
+
+export const isConsoleLanguage = (lang: SupportedLangs) => {
+  return CONSOLE_ONLY_LANGUAGES.includes(lang);
+}
 
 export const useSupportedLanguages = () => {
   const [lang, setLang] = useState<SupportedLangs>('html');
@@ -21,6 +27,8 @@ export const useSupportedLanguages = () => {
         return 'css'
       case 'javascript':
         return 'javascript'
+      case 'python':
+        return 'python'
       default:
         return 'htmlbars'
     }
